@@ -1,0 +1,16 @@
+.picoclaw-runtime/
+
+# Build artifacts
+*.exe
+*.out
+*.test
+
+# Go workspace files
+bin/
+dist/
+
+# Editor/OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

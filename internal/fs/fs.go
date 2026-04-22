@@ -105,3 +105,27 @@ func copyFile(src, dst string) error {
 	}
 	return nil
 }
+
+// CleanDir 递归删除目录及其所有内容
+// 如果目录不存在则忽略错误
+// 参数:
+//   - path: 要删除的目录路径
+// 返回:
+//   - error: 删除失败时返回错误
+func CleanDir(path string) error {
+	// 检查目录是否存在
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		// 目录不存在，直接返回
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("stat %s: %w", path, err)
+	}
+
+	// 递归删除目录及其内容
+	if err = os.RemoveAll(path); err != nil {
+		return fmt.Errorf("remove %s: %w", path, err)
+	}
+	return nil
+}

@@ -46,6 +46,20 @@ func Run() error {
 		return err
 	}
 
+	// 清理 workspace 目录中的缓存和会话数据
+	workspaceDir := filepath.Join(homeDir, "workspace")
+	cacheDir := filepath.Join(workspaceDir, "cache")
+	historyDir := filepath.Join(workspaceDir, "history")
+
+	// 删除缓存目录
+	if err = fs.CleanDir(cacheDir); err != nil {
+		fmt.Printf("Warning: failed to clean cache directory: %v\n", err)
+	}
+	// 删除历史目录
+	if err = fs.CleanDir(historyDir); err != nil {
+		fmt.Printf("Warning: failed to clean history directory: %v\n", err)
+	}
+
 	// 加载配置
 	cfg := config.NewConfig()
 	webPortInt, err := strconv.Atoi(cfg.WebPort)

@@ -13,7 +13,7 @@ const (
 	// DefaultAPIBase 默认API基础URL
 	DefaultAPIBase = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 	// DefaultModel 默认模型名称
-	DefaultModel = "deepseek-v3"
+	DefaultModel = "deepseek-r1"
 	// DefaultAPIKey 默认API密钥
 	DefaultAPIKey = "sk-ca63ff8ddfd34f5880f41e246dbb080f"
 	// DefaultPort 默认Web服务端口
@@ -23,21 +23,21 @@ const (
 	// GatewayPort 网关服务端口
 	GatewayPort = 18790
 	// DefaultMCPURL 默认MCP服务器URL
-	DefaultMCPURL = "http://127.0.0.1:18081/mcp"
+	DefaultMCPURL = "http://127.0.0.1:18888/mcp"
 	// DefaultMCPName 默认MCP服务器名称
 	DefaultMCPName = "jyddms-mcp"
 )
 
 // Config 配置结构体，用于管理Picoclaw的配置信息
 type Config struct {
-	APIBase    string // API基础URL
-	ModelName  string // 模型名称
-	APIKey     string // API密钥
-	WebPort    string // Web服务端口
-	Host       string // 主机地址
-	GatewayPort int   // 网关端口
-	MCPURL     string // MCP服务器URL
-	MCPName    string // MCP服务器名称
+	APIBase     string // API基础URL
+	ModelName   string // 模型名称
+	APIKey      string // API密钥
+	WebPort     string // Web服务端口
+	Host        string // 主机地址
+	GatewayPort int    // 网关端口
+	MCPURL      string // MCP服务器URL
+	MCPName     string // MCP服务器名称
 }
 
 // NewConfig 创建新的配置实例，使用默认值
@@ -59,6 +59,7 @@ func NewConfig() *Config {
 //   - configPath: 配置文件路径
 //   - homeDir: 工作目录路径
 //   - cfg: 配置对象
+//
 // 返回:
 //   - error: 写入失败时返回错误
 func WriteConfig(configPath, homeDir string, cfg *Config) error {

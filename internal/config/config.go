@@ -11,11 +11,11 @@ import (
 // 默认配置常量
 const (
 	// DefaultAPIBase 默认API基础URL
-	DefaultAPIBase = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+	DefaultAPIBase = "http://188.18.18.55:8802/v1"
 	// DefaultModel 默认模型名称
-	DefaultModel = "deepseek-r1"
+	DefaultModel = "qwen3.5"
 	// DefaultAPIKey 默认API密钥
-	DefaultAPIKey = "sk-ca63ff8ddfd34f5880f41e246dbb080f"
+	DefaultAPIKey = "sk-test"
 	// DefaultPort 默认Web服务端口
 	DefaultPort = "18800"
 	// DefaultHost 默认服务主机地址

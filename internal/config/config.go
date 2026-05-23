@@ -26,6 +26,8 @@ const (
 	DefaultMCPURL = "http://127.0.0.1:18888/mcp"
 	// DefaultMCPName 默认 MCP 服务器名称
 	DefaultMCPName = "jyddms-mcp"
+	// DefaultPassword 默认控制台密码
+	DefaultPassword = "picoclaw123"
 )
 
 // Config 配置结构体，用于管理 Picoclaw 的配置信息
@@ -38,6 +40,7 @@ type Config struct {
 	GatewayPort int    // 网关端口
 	MCPURL      string // MCP 服务器 URL
 	MCPName     string // MCP 服务器名称
+	Password    string // 控制台密码
 }
 
 // NewConfig 创建新的配置实例，使用默认值
@@ -51,6 +54,7 @@ func NewConfig() *Config {
 		GatewayPort: GatewayPort,
 		MCPURL:      DefaultMCPURL,
 		MCPName:     DefaultMCPName,
+		Password:    DefaultPassword,
 	}
 }
 

@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 
+	"golang.org/x/crypto/bcrypt"
 	_ "modernc.org/sqlite"
 
 	"picoclaw/internal/builder"
@@ -19,16 +20,26 @@ import (
 	picocfg "github.com/sipeed/picoclaw/pkg/config"
 )
 
-// launcherDefaultPasswordHash 预生成的 bcrypt hash (密码：picoclaw123)
-// 用于跳过首次启动时的密码设置界面
-const launcherDefaultPasswordHash = "JDJhJDEyJFZQLjNrVVRnZ01idFNzZlJzSjlwMnVHcTQ3S2pUcHZYME80WXEyRWdUUUdGUWc1dTJnaWZX"
+// generatePasswordHash 使用 bcrypt 生成密码 hash
+func generatePasswordHash(password string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hash), nil
+}
 
 // writeLauncherConfig 预先写入默认密码的 launcher-config.json
-func writeLauncherConfig(configPath string) error {
+func writeLauncherConfig(configPath, password string) error {
+	hash, err := generatePasswordHash(password)
+	if err != nil {
+		return err
+	}
+
 	launcherConfig := map[string]interface{}{
 		"port":                      18800,
 		"public":                    false,
-		"dashboard_password_hash":   launcherDefaultPasswordHash,
+		"dashboard_password_hash":   hash,
 	}
 
 	data, err := json.MarshalIndent(launcherConfig, "", "  ")
@@ -40,9 +51,9 @@ func writeLauncherConfig(configPath string) error {
 	return os.WriteFile(launcherPath, data, 0o644)
 }
 
-// initSQLiteAuthDB 初始化 SQLite 数据库并预置默认密码
+// initSQLiteAuthDB 初始化 SQLite 数据库并预置密码
 // picoclaw 使用 SQLite 存储 dashboard 密码，需要在启动前创建并写入 hash
-func initSQLiteAuthDB(homeDir string) error {
+func initSQLiteAuthDB(homeDir, password string) error {
 	dbPath := filepath.Join(homeDir, "launcher-auth.db")
 
 	// 先删除旧数据库文件，确保干净启动
@@ -67,13 +78,18 @@ CREATE TABLE IF NOT EXISTS dashboard_credentials (
 		return fmt.Errorf("failed to create schema: %w", err)
 	}
 
-	// 直接插入带默认密码 hash 的记录
-	_, err = db.Exec("INSERT INTO dashboard_credentials (id, bcrypt_hash) VALUES (1, ?)", launcherDefaultPasswordHash)
+	// 生成密码 hash 并插入
+	hash, err := generatePasswordHash(password)
+	if err != nil {
+		return fmt.Errorf("failed to generate password hash: %w", err)
+	}
+
+	_, err = db.Exec("INSERT INTO dashboard_credentials (id, bcrypt_hash) VALUES (1, ?)", hash)
 	if err != nil {
 		return fmt.Errorf("failed to insert password: %w", err)
 	}
 
-	fmt.Println("✓ SQLite auth DB initialized with default password")
+	fmt.Printf("✓ SQLite auth DB initialized with password\n")
 	return nil
 }
 
@@ -139,13 +155,13 @@ func Run() error {
 		return err
 	}
 
-	// 预先写入 launcher-config.json 带默认密码 (避免首次启动要求设置密码)
-	if err = writeLauncherConfig(runtimeDir); err != nil {
+	// 预先写入 launcher-config.json 带密码 (避免首次启动要求设置密码)
+	if err = writeLauncherConfig(runtimeDir, cfg.Password); err != nil {
 		fmt.Printf("Warning: failed to write launcher config: %v\n", err)
 	}
 
-	// 初始化 SQLite 数据库并预置默认密码
-	if err = initSQLiteAuthDB(homeDir); err != nil {
+	// 初始化 SQLite 数据库并预置密码
+	if err = initSQLiteAuthDB(homeDir, cfg.Password); err != nil {
 		fmt.Printf("Warning: failed to init auth DB: %v\n", err)
 	}
 

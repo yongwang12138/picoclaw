@@ -10,8 +10,8 @@ import (
 	"picoclaw/internal/fs"
 )
 
-// DetectPicoclawModuleSource 检测picoclaw模块的源代码路径
-// 使用go list命令获取模块路径
+// DetectPicoclawModuleSource 检测 picoclaw 模块的源代码路径
+// 使用 go list 命令获取模块路径
 // 返回:
 //   - string: 模块源代码路径
 //   - error: 检测失败时返回错误
@@ -143,8 +143,8 @@ func EnsureFrontendDist(sourceRoot string) error {
 	return nil
 }
 
-// SlimGatewayToPicoOnly 精简网关为仅Pico模式
-// 移除不需要的通道导入，减小二进制文件大小
+// SlimGatewayToPicoOnly 精简网关为仅 Pico 模式
+// 移除不需要的通道导入，减小二进制文件大小 (保留 Pico 通道)
 // 参数:
 //   - sourceRoot: 源代码根目录
 // 返回:
@@ -156,11 +156,17 @@ func SlimGatewayToPicoOnly(sourceRoot string) error {
 		return fmt.Errorf("failed to read gateway source for slimming: %w", err)
 	}
 
-	// 移除不需要的通道导入
+	// 移除不需要的通道导入，保留 Pico 通道
 	lines := strings.Split(string(data), "\n")
 	out := make([]string, 0, len(lines))
 	removed := 0
 	for _, line := range lines {
+		// 保留 Pico 通道导入
+		if strings.Contains(line, `_ "github.com/sipeed/picoclaw/pkg/channels/pico"`) {
+			out = append(out, line)
+			continue
+		}
+		// 移除其他所有通道导入
 		if strings.Contains(line, `_ "github.com/sipeed/picoclaw/pkg/channels/`) {
 			removed++
 			continue
@@ -178,12 +184,12 @@ func SlimGatewayToPicoOnly(sourceRoot string) error {
 	if err = os.WriteFile(gatewayFile, []byte(strings.Join(out, "\n")), 0644); err != nil {
 		return fmt.Errorf("failed to write slimmed gateway source: %w", err)
 	}
-	fmt.Printf("Slimmed gateway imports to Pico-only mode (removed %d channel imports)\n", removed)
+	fmt.Printf("Slimmed gateway imports to Pico-only mode (removed %d channel imports, kept pico)\n", removed)
 	return nil
 }
 
-// DisableMatrixGatewayChannel 禁用Matrix网关通道
-// 删除Matrix网关通道相关文件
+// DisableMatrixGatewayChannel 禁用 Matrix 网关通道
+// 删除 Matrix 网关通道相关文件
 // 参数:
 //   - sourceRoot: 源代码根目录
 // 返回:
@@ -196,7 +202,7 @@ func DisableMatrixGatewayChannel(sourceRoot string) error {
 		return fmt.Errorf("failed to check matrix gateway file: %w", err)
 	}
 
-	// 删除Matrix网关通道文件
+	// 删除 Matrix 网关通道文件
 	if err := os.Chmod(matrixFile, 0644); err != nil {
 		return fmt.Errorf("failed to make matrix gateway file writable: %w", err)
 	}

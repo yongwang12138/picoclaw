@@ -94,3 +94,14 @@ go build -o picoclaw.exe
 ## 依赖项
 
 - github.com/sipeed/picoclaw: Picoclaw 核心库
+
+## 更新 Picoclaw 依赖
+
+```bash
+# 查看当前版本
+go list -m github.com/sipeed/picoclaw
+# 检查最新版本
+go list -m -versions github.com/sipeed/picoclaw
+# 升级到最新版本
+go get -u github.com/sipeed/picoclaw@latest
+```

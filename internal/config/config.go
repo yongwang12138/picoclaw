@@ -10,34 +10,34 @@ import (
 
 // 默认配置常量
 const (
-	// DefaultAPIBase 默认API基础URL
+	// DefaultAPIBase 默认 API 基础 URL
 	DefaultAPIBase = "http://188.18.18.55:8802/v1"
 	// DefaultModel 默认模型名称
 	DefaultModel = "qwen3.5"
-	// DefaultAPIKey 默认API密钥
+	// DefaultAPIKey 默认 API 密钥
 	DefaultAPIKey = "sk-test"
-	// DefaultPort 默认Web服务端口
+	// DefaultPort 默认 Web 服务端口
 	DefaultPort = "18800"
 	// DefaultHost 默认服务主机地址
 	DefaultHost = "127.0.0.1"
 	// GatewayPort 网关服务端口
 	GatewayPort = 18790
-	// DefaultMCPURL 默认MCP服务器URL
+	// DefaultMCPURL 默认 MCP 服务器 URL
 	DefaultMCPURL = "http://127.0.0.1:18888/mcp"
-	// DefaultMCPName 默认MCP服务器名称
+	// DefaultMCPName 默认 MCP 服务器名称
 	DefaultMCPName = "jyddms-mcp"
 )
 
-// Config 配置结构体，用于管理Picoclaw的配置信息
+// Config 配置结构体，用于管理 Picoclaw 的配置信息
 type Config struct {
-	APIBase     string // API基础URL
+	APIBase     string // API 基础 URL
 	ModelName   string // 模型名称
-	APIKey      string // API密钥
-	WebPort     string // Web服务端口
+	APIKey      string // API 密钥
+	WebPort     string // Web 服务端口
 	Host        string // 主机地址
 	GatewayPort int    // 网关端口
-	MCPURL      string // MCP服务器URL
-	MCPName     string // MCP服务器名称
+	MCPURL      string // MCP 服务器 URL
+	MCPName     string // MCP 服务器名称
 }
 
 // NewConfig 创建新的配置实例，使用默认值
@@ -84,10 +84,10 @@ func WriteConfig(configPath, homeDir string, cfg *Config) error {
 		},
 	}
 
-	// 启用MCP工具
+	// 启用 MCP 工具
 	picoCfg.Tools.MCP.Enabled = true
 	picoCfg.Tools.MCP.Servers = map[string]picocfg.MCPServerConfig{}
-	// 配置MCP服务器
+	// 配置 MCP 服务器
 	picoCfg.Tools.MCP.Servers[cfg.MCPName] = picocfg.MCPServerConfig{
 		Enabled: true,
 		Type:    "http",

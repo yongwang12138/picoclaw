@@ -10,12 +10,18 @@ import (
 
 // 默认配置常量
 const (
+	// // DefaultAPIBase 默认 API 基础 URL
+	// DefaultAPIBase = "http://188.18.18.55:8802/v1"
+	// // DefaultModel 默认模型名称
+	// DefaultModel = "qwen3.5"
+	// // DefaultAPIKey 默认 API 密钥
+	// DefaultAPIKey = "sk-test"
 	// DefaultAPIBase 默认 API 基础 URL
-	DefaultAPIBase = "http://188.18.18.55:8802/v1"
+	DefaultAPIBase = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 	// DefaultModel 默认模型名称
-	DefaultModel = "qwen3.5"
+	DefaultModel = "deepseek-v4-flash"
 	// DefaultAPIKey 默认 API 密钥
-	DefaultAPIKey = "sk-test"
+	DefaultAPIKey = "sk-1bfef0e3ba834316976bd2dfaec6972b"
 	// DefaultPort 默认 Web 服务端口
 	DefaultPort = "18800"
 	// DefaultHost 默认服务主机地址

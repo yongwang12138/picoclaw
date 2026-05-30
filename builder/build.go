@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"picoclaw/internal/fs"
+	"picoclaw/tool"
 )
 
 // DetectPicoclawModuleSource 检测 picoclaw 模块的源代码路径
@@ -37,12 +37,13 @@ func DetectPicoclawModuleSource() (string, error) {
 // 参数:
 //   - moduleSource: 模块源代码路径
 //   - target: 目标目录路径
+//
 // 返回:
 //   - error: 准备失败时返回错误
 func PrepareBuildSource(moduleSource, target string) error {
 	// 如果目标目录不存在，则复制源代码
 	if _, err := os.Stat(target); os.IsNotExist(err) {
-		if err = fs.CopyDir(moduleSource, target); err != nil {
+		if err = tool.CopyDir(moduleSource, target); err != nil {
 			return fmt.Errorf("failed to copy source tree: %w", err)
 		}
 	} else if err != nil {
@@ -58,7 +59,7 @@ func PrepareBuildSource(moduleSource, target string) error {
 
 	// 删除旧的工作区资源并复制新的
 	_ = os.RemoveAll(workspaceTarget)
-	if err := fs.CopyDir(workspaceSource, workspaceTarget); err != nil {
+	if err := tool.CopyDir(workspaceSource, workspaceTarget); err != nil {
 		return fmt.Errorf("failed to stage onboard workspace assets: %w", err)
 	}
 	return nil
@@ -69,6 +70,7 @@ func PrepareBuildSource(moduleSource, target string) error {
 //   - sourceRoot: 源代码根目录
 //   - output: 输出二进制文件路径
 //   - pkg: 要构建的包路径
+//
 // 返回:
 //   - error: 构建失败时返回错误
 func BuildBinaryFromSource(sourceRoot, output, pkg string) error {
@@ -94,6 +96,7 @@ func BuildBinaryFromSource(sourceRoot, output, pkg string) error {
 //   - sourceRoot: 源代码根目录
 //   - output: 输出二进制文件路径
 //   - pkg: 要构建的包路径
+//
 // 返回:
 //   - error: 构建失败时返回错误
 func BuildBinaryIfNeeded(sourceRoot, output, pkg string) error {
@@ -108,6 +111,7 @@ func BuildBinaryIfNeeded(sourceRoot, output, pkg string) error {
 // 如果前端资源不存在则执行构建
 // 参数:
 //   - sourceRoot: 源代码根目录
+//
 // 返回:
 //   - error: 构建失败时返回错误
 func EnsureFrontendDist(sourceRoot string) error {
@@ -147,6 +151,7 @@ func EnsureFrontendDist(sourceRoot string) error {
 // 移除不需要的通道导入，减小二进制文件大小 (保留 Pico 通道)
 // 参数:
 //   - sourceRoot: 源代码根目录
+//
 // 返回:
 //   - error: 操作失败时返回错误
 func SlimGatewayToPicoOnly(sourceRoot string) error {
@@ -192,6 +197,7 @@ func SlimGatewayToPicoOnly(sourceRoot string) error {
 // 删除 Matrix 网关通道相关文件
 // 参数:
 //   - sourceRoot: 源代码根目录
+//
 // 返回:
 //   - error: 操作失败时返回错误
 func DisableMatrixGatewayChannel(sourceRoot string) error {
@@ -218,6 +224,7 @@ func DisableMatrixGatewayChannel(sourceRoot string) error {
 //   - dir: 工作目录
 //   - name: 命令名称
 //   - args: 命令参数
+//
 // 返回:
 //   - error: 执行失败时返回错误
 func runCmd(dir string, name string, args ...string) error {

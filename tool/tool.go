@@ -1,4 +1,4 @@
-package fs
+package tool
 
 import (
 	"fmt"
@@ -10,6 +10,7 @@ import (
 // MustMkdir 创建目录，如果失败则返回错误
 // 参数:
 //   - path: 要创建的目录路径
+//
 // 返回:
 //   - error: 创建失败时返回错误
 func MustMkdir(path string) error {
@@ -23,6 +24,7 @@ func MustMkdir(path string) error {
 // Windows系统会添加.exe后缀
 // 参数:
 //   - name: 基础文件名
+//
 // 返回:
 //   - string: 完整的二进制文件名
 func BinaryName(name string) string {
@@ -36,6 +38,7 @@ func BinaryName(name string) string {
 // 参数:
 //   - src: 源目录路径
 //   - dst: 目标目录路径
+//
 // 返回:
 //   - error: 复制失败时返回错误
 func CopyDir(src, dst string) error {
@@ -82,6 +85,7 @@ func CopyDir(src, dst string) error {
 // 参数:
 //   - src: 源文件路径
 //   - dst: 目标文件路径
+//
 // 返回:
 //   - error: 复制失败时返回错误
 func copyFile(src, dst string) error {
@@ -110,6 +114,7 @@ func copyFile(src, dst string) error {
 // 如果目录不存在则忽略错误
 // 参数:
 //   - path: 要删除的目录路径
+//
 // 返回:
 //   - error: 删除失败时返回错误
 func CleanDir(path string) error {

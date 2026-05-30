@@ -1,4 +1,4 @@
-package runner
+package core
 
 import (
 	"database/sql"
@@ -12,10 +12,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	_ "modernc.org/sqlite"
 
-	"picoclaw/internal/builder"
-	"picoclaw/internal/config"
-	"picoclaw/internal/fs"
-	"picoclaw/internal/ports"
+	"picoclaw/builder"
+	"picoclaw/config"
+	"picoclaw/ports"
+	"picoclaw/tool"
 
 	picocfg "github.com/sipeed/picoclaw/pkg/config"
 )
@@ -37,9 +37,9 @@ func writeLauncherConfig(configPath, password string) error {
 	}
 
 	launcherConfig := map[string]interface{}{
-		"port":                      18800,
-		"public":                    false,
-		"dashboard_password_hash":   hash,
+		"port":                    18800,
+		"public":                  false,
+		"dashboard_password_hash": hash,
 	}
 
 	data, err := json.MarshalIndent(launcherConfig, "", "  ")
@@ -117,10 +117,10 @@ func Run() error {
 	sourceDir := filepath.Join(runtimeDir, "picoclaw-src")
 
 	// 创建必要的目录
-	if err = fs.MustMkdir(binDir); err != nil {
+	if err = tool.MustMkdir(binDir); err != nil {
 		return err
 	}
-	if err = fs.MustMkdir(homeDir); err != nil {
+	if err = tool.MustMkdir(homeDir); err != nil {
 		return err
 	}
 
@@ -130,11 +130,11 @@ func Run() error {
 	historyDir := filepath.Join(workspaceDir, "history")
 
 	// 删除缓存目录
-	if err = fs.CleanDir(cacheDir); err != nil {
+	if err = tool.CleanDir(cacheDir); err != nil {
 		fmt.Printf("Warning: failed to clean cache directory: %v\n", err)
 	}
 	// 删除历史目录
-	if err = fs.CleanDir(historyDir); err != nil {
+	if err = tool.CleanDir(historyDir); err != nil {
 		fmt.Printf("Warning: failed to clean history directory: %v\n", err)
 	}
 
@@ -188,8 +188,8 @@ func Run() error {
 	}
 
 	// 构建二进制文件
-	gatewayBinary := filepath.Join(binDir, fs.BinaryName("picoclaw"))
-	launcherBinary := filepath.Join(binDir, fs.BinaryName("picoclaw-web"))
+	gatewayBinary := filepath.Join(binDir, tool.BinaryName("picoclaw"))
+	launcherBinary := filepath.Join(binDir, tool.BinaryName("picoclaw-web"))
 
 	if err = builder.BuildBinaryIfNeeded(sourceDir, gatewayBinary, "./cmd/picoclaw"); err != nil {
 		return err
